@@ -24,11 +24,12 @@ module main(
         input clk,
         input rstn
     );
+    wire clk_1s = clk;
     reg signed [31:0] PC;
     wire [31:0] next_PC;
     wire [31:0] instruction;
     /*--------IF--------*/
-    always @(posedge clk or negedge rstn) begin
+    always @(posedge clk_1s or negedge rstn) begin
         if (!rstn) PC <= 32'b0;
         else if (sw_i[1]) PC <= PC;
         else if (PCWrite) PC <= next_PC;
@@ -45,7 +46,7 @@ module main(
     );
     reg[31:0] IF_ID_PC;
     reg[31:0] IF_ID_instruction;
-    always @(posedge clk or negedge rstn) begin
+    always @(posedge clk_1s or negedge rstn) begin
         if (!rstn || IF_ID_Flush) begin
             IF_ID_PC <= 32'b0;
             IF_ID_instruction <= 32'b0;
@@ -118,7 +119,7 @@ module main(
     reg[9:0] ID_EX_funct;
     reg [2:0] ID_EX_DMType;
     reg [1:0] ID_EX_ALUOp;
-    always @(posedge clk or negedge rstn) begin
+    always @(posedge clk_1s or negedge rstn) begin
         if (!rstn || ID_EX_Flush) begin
             ID_EX_Read_data1 <= 32'b0;
             ID_EX_Read_data2 <= 32'b0;
@@ -289,7 +290,7 @@ module main(
     reg [5:0] EX_MEM_Write_register;
     reg EX_MEM_RegWrite, EX_MEM_MemWrite, EX_MEM_MemtoReg, EX_MEM_MemRead, EX_MEM_RegDest;
     reg [2:0] EX_MEM_DMType;
-    always @(posedge clk or negedge rstn) begin
+    always @(posedge clk_1s or negedge rstn) begin
         if (!rstn)begin
             EX_MEM_PC <= 32'b0;
             EX_MEM_ALUresult <= 32'b0;
@@ -343,7 +344,7 @@ module main(
     reg [31:0] MEM_WB_ALUresult, MEM_WB_Read_data;
     reg [5:0] MEM_WB_Write_register;
     reg MEM_WB_RegWrite, MEM_WB_MemtoReg, MEM_WB_RegDest;
-    always @(posedge clk or negedge rstn) begin
+    always @(posedge clk_1s or negedge rstn) begin
         if (!rstn) begin
             MEM_WB_PC <= 32'b0;
             MEM_WB_ALUresult <= 32'b0;
