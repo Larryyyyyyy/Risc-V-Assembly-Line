@@ -147,3 +147,88 @@ int f(int x, int y){
 216: 10534:	00008067          	jalr x0,0(x1)
 ```
 
+# 欧几里得求最大公约数
+
+```
+0:  06400093            addi x1,x0,100
+4:  10000113            addi x2,x0,256
+8:  06400513            addi x10,x0,100
+12: 04600593            addi x11,x0,70
+16: 00058793          	addi x15,x11,0
+20: 02b565b3          	rem x11,x10,x11
+24: 00078513          	addi x10,x15,0
+28: 00059863          	bne x11,x0,-12
+32: 00008067          	jalr x0,0(x1)
+```
+
+# 选择排序
+
+```
+0: addi x3,x0,20
+4: addi x15,x0,1
+8: sw x15,0(x3)
+12: addi x15,x0,1
+16: sw x15,-4(x3)
+20: addi x15,x0,4
+24: sw x15,-8(x3)
+28: addi x15,x0,5
+32: sw x15,-12(x3)
+36: addi x15,x0,1
+40: sw x15,-16(x3)
+44: addi x15,x0,4
+48: sw x15,-20(x3)
+52: jal x1, 8
+56: jalr x0,0(x1)
+60: addi x12,x0,4
+64: addi x11,x3,0
+68: addi x10,x0,1
+72: addi x16,x0,6
+76: add x15,x12,x0
+80: lw x13,0(x15)
+84: lw x14,-4(x12)
+88: bge x13,x14,12
+92: sw x13,-4(x12)
+96: sw x14,0(x15)
+100: addi x15,x15,4
+104: bne x11,x15,-24
+108: addi x10,x10,1
+112: addi x12,x12,4
+116: bne x10,x16,-40
+120: jalr x0,0(x1)
+```
+
+```
+32'd0: instruction = 32'h01400193;
+32'd4: instruction = 32'h00100793;
+32'd8: instruction = 32'h00f1a023;
+32'd12: instruction = 32'h00100793;
+32'd16: instruction = 32'hfef1ae23;   
+32'd20: instruction = 32'h00400793;   
+32'd24: instruction = 32'hfef1ac23;   
+32'd28: instruction = 32'h00500793;   
+32'd32: instruction = 32'hfef1aa23;   
+32'd36: instruction = 32'h00100793;   
+32'd40: instruction = 32'hfef1a823;   
+32'd44: instruction = 32'h00400793;   
+32'd48: instruction = 32'hfef1a623;   
+32'd52: instruction = 32'h008000ef;   
+32'd56: instruction = 32'h00008067;   
+32'd60: instruction = 32'h00400613;   
+32'd64: instruction = 32'h00018593;   
+32'd68: instruction = 32'h00100513;   
+32'd72: instruction = 32'h00600813;   
+32'd76: instruction = 32'h000607b3;   
+32'd80: instruction = 32'h0007a683;   
+32'd84: instruction = 32'hffc62703;   
+32'd88: instruction = 32'h00e6d663;   
+32'd92: instruction = 32'hfed62e23;   
+32'd96: instruction = 32'h00e7a023;   
+32'd100: instruction = 32'h00478793;   
+32'd104: instruction = 32'hfef594e3;   
+32'd108: instruction = 32'h00150513;   
+32'd112: instruction = 32'h00460613;   
+32'd116: instruction = 32'hfd051ce3;   
+32'd120: instruction = 32'h00008067;   
+default: instruction = 32'h00000000;  
+```
+

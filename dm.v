@@ -30,7 +30,7 @@ module dm(
     reg [7:0] data[1023:0];
     reg [31:0] R_d;
     integer i;
-    always @(posedge clk or negedge rstn) begin
+    always @(negedge clk or negedge rstn) begin
         if (!rstn) for (i = 0; i < 1024; i = i + 1) data[i] <= 8'b0;
         else begin
             if (MemWrite) begin

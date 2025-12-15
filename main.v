@@ -24,14 +24,12 @@ module main(
         input clk,
         input rstn
     );
-    wire clk_1s = clk;
     reg signed [31:0] PC;
     wire [31:0] next_PC;
     wire [31:0] instruction;
     /*--------IF--------*/
-    always @(posedge clk_1s or negedge rstn) begin
+    always @(posedge clk or negedge rstn) begin
         if (!rstn) PC <= 32'b0;
-        else if (sw_i[1]) PC <= PC;
         else if (PCWrite) PC <= next_PC;
     end
     /* 你可以用 instruction.v 里拙劣的方法调试
@@ -46,16 +44,12 @@ module main(
     );
     reg[31:0] IF_ID_PC;
     reg[31:0] IF_ID_instruction;
-    always @(posedge clk_1s or negedge rstn) begin
+    always @(posedge clk or negedge rstn) begin
         if (!rstn || IF_ID_Flush) begin
             IF_ID_PC <= 32'b0;
             IF_ID_instruction <= 32'b0;
         end
         else if (!IF_ID_Write) begin
-            IF_ID_PC <= IF_ID_PC;
-            IF_ID_instruction <= IF_ID_instruction;
-        end
-        else if (sw_i[1]) begin
             IF_ID_PC <= IF_ID_PC;
             IF_ID_instruction <= IF_ID_instruction;
         end
@@ -119,7 +113,7 @@ module main(
     reg[9:0] ID_EX_funct;
     reg [2:0] ID_EX_DMType;
     reg [1:0] ID_EX_ALUOp;
-    always @(posedge clk_1s or negedge rstn) begin
+    always @(posedge clk or negedge rstn) begin
         if (!rstn || ID_EX_Flush) begin
             ID_EX_Read_data1 <= 32'b0;
             ID_EX_Read_data2 <= 32'b0;
@@ -141,27 +135,6 @@ module main(
             ID_EX_funct <= 10'b0;
             ID_EX_DMType <= 3'b0;
             ID_EX_ALUOp <= 2'b0;
-        end else if (sw_i[1]) begin
-            ID_EX_Read_data1 <= ID_EX_Read_data1;
-            ID_EX_Read_data2 <= ID_EX_Read_data2;
-            ID_EX_imm <= ID_EX_imm;
-            ID_EX_PC <= ID_EX_PC;
-            ID_EX_Write_register <= ID_EX_Write_register;
-            ID_EX_Read_register1 <= ID_EX_Read_register1;
-            ID_EX_Read_register2 <= ID_EX_Read_register2;
-            ID_EX_RegWrite <= ID_EX_RegWrite;
-            ID_EX_ALUsrc <= ID_EX_ALUsrc;
-            ID_EX_MemWrite <= ID_EX_MemWrite;
-            ID_EX_MemtoReg <= ID_EX_MemtoReg;
-            ID_EX_MemRead <= ID_EX_MemRead;
-            ID_EX_Branch <= ID_EX_Branch;
-            ID_EX_JumpJalr <= ID_EX_JumpJalr;
-            ID_EX_RegDest <= ID_EX_RegDest;
-            ID_EX_ALUsrcLui <= ID_EX_ALUsrcLui;
-            ID_EX_ALUsrcAuipc <= ID_EX_ALUsrcAuipc;
-            ID_EX_funct <= ID_EX_funct;
-            ID_EX_DMType <= ID_EX_DMType;
-            ID_EX_ALUOp <= ID_EX_ALUOp;
         end else begin
             ID_EX_Read_data1 <= Read_data1;
             ID_EX_Read_data2 <= Read_data2;
@@ -194,7 +167,6 @@ module main(
         .MEM_WB_Write_register(MEM_WB_Write_register),
         .EX_MEM_RegWrite(EX_MEM_RegWrite),
         .MEM_WB_RegWrite(MEM_WB_RegWrite),
-        .ID_EX_ALUsrc(ID_EX_ALUsrc),
         .ForwardA(ForwardA),
         .ForwardB(ForwardB)
     );
@@ -208,7 +180,7 @@ module main(
     );
     wire [31:0] forward_mux_res2;
     forward_mux u_forward_mux_2(
-        .A(mux_res1),
+        .A(ID_EX_Read_data2),
         .B(mux_res4),
         .C(EX_MEM_ALUresult),
         .Forward(ForwardB),
@@ -221,8 +193,8 @@ module main(
         .ALUoperation(ALUoperation)
     );
     wire [31:0] mux_res1;
-    mux u_mux1( // 寄存器值 or 立即数
-        .x(ID_EX_Read_data2),
+    mux u_mux1( // 寄存器值与后面计算的结果 or 立即数
+        .x(forward_mux_res2),
         .y(ID_EX_imm),
         .signal(ID_EX_ALUsrc),
         .z(mux_res1)
@@ -246,7 +218,7 @@ module main(
     alu u_alu(
         .ALUoperation(ALUoperation),
         .A(forward_mux_res1),
-        .B(forward_mux_res2),
+        .B(mux_res1),
         .ALUresult(ALUresult),
         .Zero(Zero),
         .Negative(Negative),
@@ -290,7 +262,7 @@ module main(
     reg [5:0] EX_MEM_Write_register;
     reg EX_MEM_RegWrite, EX_MEM_MemWrite, EX_MEM_MemtoReg, EX_MEM_MemRead, EX_MEM_RegDest;
     reg [2:0] EX_MEM_DMType;
-    always @(posedge clk_1s or negedge rstn) begin
+    always @(posedge clk or negedge rstn) begin
         if (!rstn)begin
             EX_MEM_PC <= 32'b0;
             EX_MEM_ALUresult <= 32'b0;
@@ -302,18 +274,6 @@ module main(
             EX_MEM_MemRead <= 0;
             EX_MEM_RegDest <= 0;
             EX_MEM_DMType <= 3'b0;
-        end
-        else if (sw_i[1]) begin
-            EX_MEM_PC <= EX_MEM_PC;
-            EX_MEM_ALUresult <= EX_MEM_ALUresult;
-            EX_MEM_Read_data2 <= EX_MEM_Read_data2;
-            EX_MEM_Write_register <= EX_MEM_Write_register;
-            EX_MEM_RegWrite <= EX_MEM_RegWrite;
-            EX_MEM_MemWrite <= EX_MEM_MemWrite;
-            EX_MEM_MemtoReg <= EX_MEM_MemtoReg;
-            EX_MEM_MemRead <= EX_MEM_MemRead;
-            EX_MEM_RegDest <= EX_MEM_RegDest;
-            EX_MEM_DMType <= EX_MEM_DMType;
         end
         else begin
             EX_MEM_PC <= ID_EX_PC;
@@ -344,7 +304,7 @@ module main(
     reg [31:0] MEM_WB_ALUresult, MEM_WB_Read_data;
     reg [5:0] MEM_WB_Write_register;
     reg MEM_WB_RegWrite, MEM_WB_MemtoReg, MEM_WB_RegDest;
-    always @(posedge clk_1s or negedge rstn) begin
+    always @(posedge clk or negedge rstn) begin
         if (!rstn) begin
             MEM_WB_PC <= 32'b0;
             MEM_WB_ALUresult <= 32'b0;
@@ -353,14 +313,6 @@ module main(
             MEM_WB_RegWrite <= 1'b0;
             MEM_WB_MemtoReg <= 1'b0;
             MEM_WB_RegDest <= 1'b0;
-        end else if (sw_i[1]) begin
-            MEM_WB_PC <= MEM_WB_PC;
-            MEM_WB_ALUresult <= MEM_WB_ALUresult;
-            MEM_WB_Read_data <= MEM_WB_Read_data;
-            MEM_WB_Write_register <= MEM_WB_Write_register;
-            MEM_WB_RegWrite <= MEM_WB_RegWrite;
-            MEM_WB_MemtoReg <= MEM_WB_MemtoReg;
-            MEM_WB_RegDest <= MEM_WB_RegDest;
         end else begin
             MEM_WB_PC <= EX_MEM_PC;
             MEM_WB_ALUresult <= EX_MEM_ALUresult;

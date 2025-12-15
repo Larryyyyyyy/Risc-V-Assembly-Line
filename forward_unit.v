@@ -24,7 +24,6 @@ module forward_unit(
     input [4:0] ID_EX_Read_register1, ID_EX_Read_register2,
     input [4:0] EX_MEM_Write_register, MEM_WB_Write_register,
     input EX_MEM_RegWrite, MEM_WB_RegWrite,
-    input ID_EX_ALUsrc, // 如果它为 1 则忽略 ID_EX_Read_register2 (你妈的怎么 S 型指令是既使用 imm 又使用 rs2 的啊)
     output reg [1:0] ForwardA, ForwardB
 );
     always @(*) begin
@@ -34,9 +33,9 @@ module forward_unit(
             ForwardA = 2'b10;
         else if (MEM_WB_RegWrite && (MEM_WB_Write_register != 5'b0) && (MEM_WB_Write_register == ID_EX_Read_register1))
             ForwardA = 2'b01;
-        if (!ID_EX_ALUsrc && EX_MEM_RegWrite && (EX_MEM_Write_register != 5'b0) && (EX_MEM_Write_register == ID_EX_Read_register2))
+        if (EX_MEM_RegWrite && (EX_MEM_Write_register != 5'b0) && (EX_MEM_Write_register == ID_EX_Read_register2))
             ForwardB = 2'b10;
-        else if (!ID_EX_ALUsrc && MEM_WB_RegWrite && (MEM_WB_Write_register != 5'b0) && (MEM_WB_Write_register == ID_EX_Read_register2))
+        else if (MEM_WB_RegWrite && (MEM_WB_Write_register != 5'b0) && (MEM_WB_Write_register == ID_EX_Read_register2))
             ForwardB = 2'b01;
     end
 endmodule
