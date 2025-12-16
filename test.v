@@ -5,16 +5,9 @@ module main_tb;
 reg clk;
 reg rstn;
 
-reg [15:0] sw_i;
-
-wire [7:0] o_seg, o_sel;
-
 main uut (
     .clk(clk),
-    .rstn(rstn),
-    .sw_i(sw_i),
-    .disp_seg_o(o_seg),
-    .disp_an_o(o_sel)
+    .rstn(rstn)
 );
 
 parameter CLK_PERIOD = 2;
@@ -23,7 +16,6 @@ integer i;
 initial begin
     clk = 1'b0;
     rstn = 1'b0;
-    sw_i = 16'b0;
     forever #(CLK_PERIOD) clk = ~clk;
 end
 
@@ -33,10 +25,17 @@ initial begin
     $display("%d: PC = %h, next_PC = %h", -1, uut.PC, uut.next_PC);
     rstn = 1'b1;
     #(CLK_PERIOD);
-    for (i = 0; i < 256; i = i + 1) begin
-        $display("%d: clk_1s = %h, PC = %d, next_PC = %d, x1 = %d, x2 = %d, x11 = %d, x10 = %d, x17 = %d, x12 = %d", 
-        i, uut.clk_1s, uut.PC, uut.next_PC, uut.u_rf.Registers[1], uut.u_rf.Registers[2], 
-        uut.u_rf.Registers[11], uut.u_rf.Registers[10], uut.u_rf.Registers[17], uut.u_rf.Registers[12]);
+    for (i = 0; i < 1024; i = i + 1) begin
+        $display("%d: clk = %h, PC = %d, next_PC = %d, d[0] = %d, d[4] = %d, d[8] = %d, d[12] = %d, d[16] = %d, d[20] = %d, d[24] = %d", 
+        i, uut.clk, uut.PC, uut.next_PC, uut.u_dm.data[0], uut.u_dm.data[4], 
+        uut.u_dm.data[8], uut.u_dm.data[12], uut.u_dm.data[16], uut.u_dm.data[20],
+        uut.u_dm.data[24]);
+        /*
+        $display("%d: clk = %h, PC = %d, next_PC = %d, x1 = %d, x2 = %d, x10 = %d, x11 = %d, x12 = %d, x8 = %d, x9 = %d", 
+        i, uut.clk, uut.PC, uut.next_PC, uut.u_rf.Registers[1], uut.u_rf.Registers[2], 
+        uut.u_rf.Registers[10], uut.u_rf.Registers[11], uut.u_rf.Registers[12], uut.u_rf.Registers[8],
+        uut.u_rf.Registers[9]);
+        */
         #(CLK_PERIOD * 2);
     end
     $display("%d: PC = %d, next_PC = %d", 256, uut.PC, uut.next_PC);
