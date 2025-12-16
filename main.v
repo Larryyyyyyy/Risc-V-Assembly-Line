@@ -32,16 +32,17 @@ module main(
         if (!rstn) PC <= 32'b0;
         else if (PCWrite) PC <= next_PC;
     end
-    /* 你可以用 instruction.v 里拙劣的方法调试
+    // 你可以用 instruction.v 里拙劣的方法调试
     instructions u_instructions(
         .PC(PC),
         .instruction(instruction)
     );
-    */
+    /*
     dist_mem_gen_0 u_dist_mem_gen_0(
         .a(PC >> 2),
         .spo(instruction)
     );
+    */
     reg[31:0] IF_ID_PC;
     reg[31:0] IF_ID_instruction;
     always @(posedge clk or negedge rstn) begin
@@ -278,7 +279,7 @@ module main(
         else begin
             EX_MEM_PC <= ID_EX_PC;
             EX_MEM_ALUresult <= ALUresult;
-            EX_MEM_Read_data2 <= ID_EX_Read_data2;
+            EX_MEM_Read_data2 <= forward_mux_res2;
             EX_MEM_Write_register <= ID_EX_Write_register;
             EX_MEM_RegWrite <= ID_EX_RegWrite;
             EX_MEM_MemWrite <= ID_EX_MemWrite;
