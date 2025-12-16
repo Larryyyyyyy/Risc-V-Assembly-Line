@@ -27,7 +27,7 @@ module dm(
         input [31:0] Address, Write_data,
         output [31:0] Read_data
     );
-    reg [7:0] data[1023:0];
+    reg [7:0] data[32767:0];
     reg [31:0] R_d;
     integer i;
     always @(negedge clk or negedge rstn) begin
