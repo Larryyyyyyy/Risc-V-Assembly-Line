@@ -45,9 +45,6 @@ module immgen(
             7'b1100011: begin // SB
                 imm = (instruction[31] == 0) ? {19'b0, instruction[31], instruction[7], instruction[30:25], instruction[11:8], 1'b0} : {19'h7FFFF, instruction[31], instruction[7], instruction[30:25], instruction[11:8], 1'b0};
             end
-            7'b0110111: begin // U
-                imm = (instruction[31] == 0) ? {12'b0, instruction[31:12]} : {12'hFFF, instruction[31:12]};
-            end
             7'b1101111: begin // UJ
                 imm = (instruction[31] == 0) ? {11'b0, instruction[31], instruction[19:12], instruction[20], instruction[30:21], 1'b0} : {11'h7FF, instruction[31], instruction[19:12], instruction[20], instruction[30:21], 1'b0};
             end
@@ -56,6 +53,9 @@ module immgen(
             end
             7'b0010111: begin // auipc
                 imm = (instruction[31] == 0) ? {instruction[31:12], 12'b0} : {instruction[31:12], 12'hFFF};
+            end
+            default: begin
+                imm = 32'b0;
             end
         endcase
     end
