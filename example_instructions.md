@@ -180,7 +180,7 @@ int f(int x, int y){
 52: jal x1, 8
 56: jalr x0,0(x1)
 60: addi x12,x0,4
-64: addi x11,x3,0
+64: addi x11,x3,4
 68: addi x10,x0,1
 72: addi x16,x0,6
 76: add x15,x12,x0
@@ -202,33 +202,112 @@ int f(int x, int y){
 32'd4: instruction = 32'h00100793;
 32'd8: instruction = 32'h00f1a023;
 32'd12: instruction = 32'h00100793;
-32'd16: instruction = 32'hfef1ae23;   
-32'd20: instruction = 32'h00400793;   
-32'd24: instruction = 32'hfef1ac23;   
-32'd28: instruction = 32'h00500793;   
-32'd32: instruction = 32'hfef1aa23;   
-32'd36: instruction = 32'h00100793;   
-32'd40: instruction = 32'hfef1a823;   
-32'd44: instruction = 32'h00400793;   
-32'd48: instruction = 32'hfef1a623;   
-32'd52: instruction = 32'h008000ef;   
-32'd56: instruction = 32'h00008067;   
-32'd60: instruction = 32'h00400613;   
-32'd64: instruction = 32'h00018593;   
-32'd68: instruction = 32'h00100513;   
-32'd72: instruction = 32'h00600813;   
-32'd76: instruction = 32'h000607b3;   
-32'd80: instruction = 32'h0007a683;   
-32'd84: instruction = 32'hffc62703;   
-32'd88: instruction = 32'h00e6d663;   
-32'd92: instruction = 32'hfed62e23;   
-32'd96: instruction = 32'h00e7a023;   
-32'd100: instruction = 32'h00478793;   
-32'd104: instruction = 32'hfef594e3;   
-32'd108: instruction = 32'h00150513;   
-32'd112: instruction = 32'h00460613;   
-32'd116: instruction = 32'hfd051ce3;   
-32'd120: instruction = 32'h00008067;   
-default: instruction = 32'h00000000;  
+32'd16: instruction = 32'hfef1ae23;
+32'd20: instruction = 32'h00400793;
+32'd24: instruction = 32'hfef1ac23;
+32'd28: instruction = 32'h00500793;
+32'd32: instruction = 32'hfef1aa23;
+32'd36: instruction = 32'h00100793;
+32'd40: instruction = 32'hfef1a823;
+32'd44: instruction = 32'h00400793;
+32'd48: instruction = 32'hfef1a623;
+32'd52: instruction = 32'h008000ef;
+32'd56: instruction = 32'h00008067;
+32'd60: instruction = 32'h00400613;
+32'd64: instruction = 32'h00418593;
+32'd68: instruction = 32'h00100513;
+32'd72: instruction = 32'h00600813;
+32'd76: instruction = 32'h000607b3;
+32'd80: instruction = 32'h0007a683;
+32'd84: instruction = 32'hffc62703;
+32'd88: instruction = 32'h00e6d663;
+32'd92: instruction = 32'hfed62e23;
+32'd96: instruction = 32'h00e7a023;
+32'd100: instruction = 32'h00478793;
+32'd104: instruction = 32'hfef594e3;
+32'd108: instruction = 32'h00150513;
+32'd112: instruction = 32'h00460613;
+32'd116: instruction = 32'hfd051ce3;
+32'd120: instruction = 32'h00008067;
+default: instruction = 32'h00000000;
+```
+
+# 快速排序
+
+```
+0:	00100f93          	addi x31,x0,1
+4:	01f02023          	sw x31,0(x0)
+8:	01f02423          	sw x31,8(x0)
+12:	01f02a23          	sw x31,20(x0)
+16:	00900f93          	addi x31,x0,9
+20:	01f02223          	sw x31,4(x0)
+24:	01f02623          	sw x31,12(x0)
+28:	00800f93          	addi x31,x0,8
+32:	01f02823          	sw x31,16(x0)
+36:	00004137          	lui x2,4
+40:	40000093          	addi x1,x0,1024
+44:	00600613          	addi x12,x0,6
+48:	0ec5da63          	bge x11,x12,244
+52:	fd010113          	addi x2,x2,-48
+56:	00912c23          	sw x9,24(x2)
+60:	01212823          	sw x18,16(x2)
+64:	01312423          	sw x19,8(x2)
+68:	02112423          	sw x1,40(x2)
+72:	02812023          	sw x8,32(x2)
+76:	00050493          	addi x9,x10,0
+80:	00060993          	addi x19,x12,0
+84:	00450913          	addi x18,x10,4
+88:	00259693          	slli x13,x11,0x2
+92:	00d486b3          	add x13,x9,x13
+96:	0006a803          	lw x16,0(x13)
+100:	00098793          	addi x15,x19,0
+104:	00058413          	addi x8,x11,0
+108:	0935d263          	bge x11,x19,132
+112:	00279713          	slli x14,x15,0x2
+116:	00e48733          	add x14,x9,x14
+120:	00c0006f          	jal x0,12
+124:	fff78793          	addi x15,x15,-1
+128:	06878463          	beq x15,x8,104
+132:	00072683          	lw x13,0(x14)
+136:	ffc70713          	addi x14,x14,-4
+140:	ff06d8e3          	bge x13,x16,-16
+144:	04f45c63          	bge x8,x15,88
+148:	00279893          	slli x17,x15,0x2
+152:	011488b3          	add x17,x9,x17
+156:	0008a603          	lw x12,0(x17)
+160:	00241713          	slli x14,x8,0x2
+164:	00e486b3          	add x13,x9,x14
+168:	00140413          	addi x8,x8,1
+172:	00c6a023          	sw x12,0(x13)
+176:	02f45c63          	bge x8,x15,56
+180:	00e90733          	add x14,x18,x14
+184:	00c0006f          	jal x0,12
+188:	00140413          	addi x8,x8,1
+192:	02878463          	beq x15,x8,40
+196:	00072603          	lw x12,0(x14)
+200:	00070693          	addi x13,x14,0
+204:	00470713          	addi x14,x14,4
+208:	ff0646e3          	blt x12,x16,-20
+212:	00f45e63          	bge x8,x15,28
+216:	fff78793          	addi x15,x15,-1
+220:	00c8a023          	sw x12,0(x17)
+224:	f8f448e3          	blt x8,x15,-112
+228:	00c0006f          	jal x0,12
+232:	00241693          	slli x13,x8,0x2
+236:	00d486b3          	add x13,x9,x13
+240:	0106a023          	sw x16,0(x13)
+244:	fff40613          	addi x12,x8,-1
+248:	00048513          	addi x10,x9,0
+252:	f35ff0ef          	jal x1,-204
+256:	00140593          	addi x11,x8,1
+260:	f535cae3          	blt x11,x19,-172
+264:	02812083          	lw x1,40(x2)
+268:	02012403          	lw x8,32(x2)
+272:	01812483          	lw x9,24(x2)
+276:	01012903          	lw x18,16(x2)
+280:	00812983          	lw x19,8(x2)
+284:	03010113          	addi x2,x2,48
+288:	00008067          	jalr x0,0(x1)
+292:	00008067          	jalr x0,0(x1)
 ```
 
