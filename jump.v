@@ -30,7 +30,7 @@ module jump(
             3'b000: jump_taken = Zero;
             3'b001: jump_taken = ~Zero;
             3'b100: jump_taken = Negative ^ Overflow;
-            3'b101: jump_taken = ~Zero & ~(Negative ^ Overflow);
+            3'b101: jump_taken = ~(Negative ^ Overflow);
             3'b110: jump_taken = Carry;
             3'b111: jump_taken = ~Carry;
             default: jump_taken = 1'b0;
