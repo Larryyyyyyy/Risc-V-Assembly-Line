@@ -31,7 +31,7 @@ module dm(
     reg [31:0] R_d;
     integer i;
     always @(negedge clk or negedge rstn) begin
-        if (!rstn) for (i = 0; i < 1024; i = i + 1) data[i] <= 8'b0;
+        if (!rstn) for (i = 0; i < 32768; i = i + 1) data[i] <= 8'b0;
         else begin
             if (MemWrite) begin
                 case (DMType)
