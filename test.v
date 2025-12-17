@@ -25,16 +25,17 @@ initial begin
     $display("%d: PC = %h, next_PC = %h", -1, uut.PC, uut.next_PC);
     rstn = 1'b1;
     #(CLK_PERIOD);
-    for (i = 0; i < 1024; i = i + 1) begin
+    for (i = 0; i < 512; i = i + 1) begin
+        
         $display("%d: clk = %h, PC = %d, next_PC = %d, d[0] = %d, d[4] = %d, d[8] = %d, d[12] = %d, d[16] = %d, d[20] = %d, d[24] = %d", 
         i, uut.clk, uut.PC, uut.next_PC, uut.u_dm.data[0], uut.u_dm.data[4], 
         uut.u_dm.data[8], uut.u_dm.data[12], uut.u_dm.data[16], uut.u_dm.data[20],
         uut.u_dm.data[24]);
         /*
-        $display("%d: clk = %h, PC = %d, next_PC = %d, x1 = %d, x2 = %d, x10 = %d, x11 = %d, x12 = %d, x8 = %d, x9 = %d", 
+        $display("%d: clk = %h, PC = %d, next_PC = %d, x1 = %d, x2 = %d, x10 = %d, IF_next_PC = %d, x15 = %d, EX_next_PC = %d, Predict_Flush = %d", 
         i, uut.clk, uut.PC, uut.next_PC, uut.u_rf.Registers[1], uut.u_rf.Registers[2], 
-        uut.u_rf.Registers[10], uut.u_rf.Registers[11], uut.u_rf.Registers[12], uut.u_rf.Registers[8],
-        uut.u_rf.Registers[9]);
+        uut.u_rf.Registers[10], uut.IF_next_PC, uut.u_rf.Registers[15], uut.EX_next_PC,
+        uut.Predict_Flush);
         */
         #(CLK_PERIOD * 2);
     end
