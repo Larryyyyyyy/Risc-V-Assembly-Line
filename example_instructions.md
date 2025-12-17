@@ -36,7 +36,7 @@ int f(int x){
 适合写入`instructions.v`的部分
 
 ```
-32'd0: instruction = 32'h00500513;    // addi x10, x0, 4
+32'd0: instruction = 32'h00500513;    // addi x10, x0, 5
 32'd4: instruction = 32'h06400093;    // addi x1, x0, 100
 32'd8: instruction = 32'h20000113;    // addi x2, x0, 512
 32'd12: instruction = 32'h00100793;   // addi x15, x0, 1
@@ -431,6 +431,21 @@ default: instruction = 32'h00000000;
 32'd56: instruction = 32'h00008067;
 32'd60: instruction = 32'h00178513;
 32'd64: instruction = 32'hfe5ff06f;
+default: instruction = 32'h00000000;
+```
+
+# 动态预测单元
+
+```
+0:	00a00513          	addi x10,x0,10
+4:	00108093          	addi x1,x1,1
+8:	fea0cee3          	blt x1,x10,-4
+```
+
+```
+32'd0: instruction = 32'h00a00513;
+32'd4: instruction = 32'h00108093;
+32'd8: instruction = 32'hfea0cee3;
 default: instruction = 32'h00000000;
 ```
 
