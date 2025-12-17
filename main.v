@@ -235,11 +235,25 @@ module main(
         .funct3(ID_EX_funct[2:0]),
         .jump_taken(jump_taken)
     );
+    wire Predict_Flush;
+    wire signed [31:0] IF_next_PC, EX_next_PC;
+    activate_predict_unit u_activate_predict_unit(
+        .clk(clk),
+        .rstn(rstn),
+        .IF_PC(PC[31:2]),
+        .EX_PC(ID_EX_PC[31:2]),
+        .ID_EX_imm(ID_EX_imm),
+        .Branch(ID_EX_Branch),
+        .jump_taken(jump_taken),
+        .IF_next_PC(IF_next_PC),
+        .EX_next_PC(EX_next_PC),
+        .Predict_Flush(Predict_Flush)
+    );
     wire [31:0] mux_res3;
-    mux u_mux3( // 跳转写回 PC 的逻辑
-        .x(PC + 4),
-        .y(ID_EX_PC + ID_EX_imm),
-        .signal(jump_taken & ID_EX_Branch),
+    mux u_mux3( // 从动态预测单元取目标地址
+        .x(IF_next_PC),
+        .y(EX_next_PC),
+        .signal(Predict_Flush),
         .z(mux_res3)
     );
     wire [31:0] mux_res5;
@@ -256,8 +270,8 @@ module main(
         .z(next_PC)
     );
     wire IF_ID_Flush, ID_EX_Flush;
-    assign IF_ID_Flush = (JumpJal || (jump_taken && ID_EX_Branch) || ID_EX_JumpJalr) ? 1 : 0;
-    assign ID_EX_Flush = ((jump_taken && ID_EX_Branch) || ID_EX_JumpJalr) ? 1 : 0;
+    assign IF_ID_Flush = (JumpJal || ID_EX_JumpJalr || Predict_Flush) ? 1 : 0;
+    assign ID_EX_Flush = (ID_EX_JumpJalr || Predict_Flush) ? 1 : 0;
     reg [31:0] EX_MEM_PC;
     reg [31:0] EX_MEM_ALUresult, EX_MEM_Read_data2;
     reg [5:0] EX_MEM_Write_register;
