@@ -389,3 +389,48 @@ default: instruction = 32'h00000000;
 default: instruction = 32'h00000000;
 ```
 
+# 二分查找
+
+> 使用本测试样例需要预先设定`data[4096]~data[4124]`。
+
+```
+0:	40000093          	addi x1,x0,1024
+4:	20000113          	addi x2,x0,512
+8:	000016b7          	lui x13,1
+12:	00700593          	addi x11,x0,7
+16:	39700613          	addi x12,x0,919
+20:	0100006f          	jal x0,10478 <_Z4findiii+0x18>
+24:	00072703          	lw x14,0(x14)
+28:	02c74063          	blt x14,x12,10490 <_Z4findiii+0x30>
+32:	00078593          	addi x11,x15,0
+36:	00b507b3          	add x15,x10,x11
+40:	4017d793          	srai x15,x15,0x1
+44:	00279713          	slli x14,x15,0x2
+48:	00e68733          	add x14,x13,x14
+52:	feb512e3          	bne x10,x11,1046c <_Z4findiii+0xc>
+56:	00008067          	jalr x0,0(x1)
+60:	00178513          	addi x10,x15,1
+64:	fe5ff06f          	jal x0,10478 <_Z4findiii+0x18>
+```
+
+```
+32'd0: instruction = 32'h40000093;
+32'd4: instruction = 32'h20000113;
+32'd8: instruction = 32'h000016b7;
+32'd12: instruction = 32'h00700593;
+32'd16: instruction = 32'h39700613;
+32'd20: instruction = 32'h0100006f;
+32'd24: instruction = 32'h00072703;
+32'd28: instruction = 32'h02c74063;
+32'd32: instruction = 32'h00078593;
+32'd36: instruction = 32'h00b507b3;
+32'd40: instruction = 32'h4017d793;
+32'd44: instruction = 32'h00279713;
+32'd48: instruction = 32'h00e68733;
+32'd52: instruction = 32'hfeb512e3;
+32'd56: instruction = 32'h00008067;
+32'd60: instruction = 32'h00178513;
+32'd64: instruction = 32'hfe5ff06f;
+default: instruction = 32'h00000000;
+```
+
