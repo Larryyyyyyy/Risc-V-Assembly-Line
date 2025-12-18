@@ -274,7 +274,7 @@ module main(
     assign ID_EX_Flush = (ID_EX_JumpJalr || Predict_Flush) ? 1 : 0;
     reg [31:0] EX_MEM_PC;
     reg [31:0] EX_MEM_ALUresult, EX_MEM_Read_data2;
-    reg [5:0] EX_MEM_Write_register;
+    reg [4:0] EX_MEM_Write_register;
     reg EX_MEM_RegWrite, EX_MEM_MemWrite, EX_MEM_MemtoReg, EX_MEM_MemRead, EX_MEM_RegDest;
     reg [2:0] EX_MEM_DMType;
     always @(posedge clk or negedge rstn) begin
@@ -282,7 +282,7 @@ module main(
             EX_MEM_PC <= 32'b0;
             EX_MEM_ALUresult <= 32'b0;
             EX_MEM_Read_data2 <= 32'b0;
-            EX_MEM_Write_register <= 6'b0;
+            EX_MEM_Write_register <= 5'b0;
             EX_MEM_RegWrite <= 0;
             EX_MEM_MemWrite <= 0;
             EX_MEM_MemtoReg <= 0;
