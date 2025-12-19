@@ -21,39 +21,47 @@
 
 
 module alu(
-        input [3:0] ALUoperation,
+        input [4:0] ALUoperation,
         input signed [31:0] A, B,
         output signed [31:0] ALUresult,
         output Zero, Negative, Overflow, Carry
     );
+    wire [32:0] op1_ext;
+    wire [32:0] op2_ext;
+    assign op1_ext = (ALUoperation == 5'b01000 || ALUoperation == 5'b01001 || ALUoperation == 5'b01011) ? {A[31], A} : {1'b0, A};
+    assign op2_ext = (ALUoperation == 5'b01000 || ALUoperation == 5'b01001) ? {B[31], B} : {1'b0, B};
+    wire [65:0] full_result = $signed(op1_ext) * $signed(op2_ext);
     reg signed [31:0] res;
     always @* begin
         res = 32'b0;
         case(ALUoperation)
-            4'b0000: res = A + B;
-            4'b0001: res = A - B;
-            4'b0010: res = A & B;
-            4'b0011: res = A | B;
-            4'b0100: res = A ^ B;
-            4'b0101: res = A << B;
-            4'b0110: res = A >> B;
-            4'b0111: res = A >>> B;
-            4'b1000: res = A * B;
-            4'b1001: res = A * B; // 暂略
-            4'b1010: res = A * B; // 暂略
-            4'b1011: res = A * B; // 暂略
-            4'b1100: res = A / B;
-            4'b1101: res = A / B; // 暂略
-            4'b1110: res = A % B;
-            4'b1111: res = A % B; // 暂略
+            5'b00000: res = A + B;
+            5'b00001: res = A - B;
+            5'b00010: res = A & B;
+            5'b00011: res = A | B;
+            5'b00100: res = A ^ B;
+            5'b00101: res = A << B;
+            5'b00110: res = A >> B;
+            5'b00111: res = A >>> B;
+            5'b01000: res = full_result[31:0];
+            5'b01001: res = full_result[63:32];
+            5'b01010: res = full_result[63:32];
+            5'b01011: res = full_result[63:32];
+            5'b01100: res = A / B;
+            5'b01101: res = {1'b0, A} / {1'b0, B};
+            5'b01110: res = A % B;
+            5'b01111: res = {1'b0, A} % {1'b0, B};
+            5'b10000: res = A - B;
+            5'b10001: res = A - B;
             default: res = 0;
         endcase
     end
-    assign ALUresult = res;
     assign Zero = (res == 32'b0) ? 1'b1 : 1'b0;
     assign Negative = res[31];
-    assign Overflow = ((ALUoperation == 4'b0000) && (A[31] == B[31]) && (res[31] != A[31])) ? 1'b1 :
-                      ((ALUoperation == 4'b0001) && (A[31] != B[31]) && (res[31] != A[31])) ? 1'b1 : 1'b0;
-    assign Carry = ((ALUoperation == 4'b0000) && (res < A)) ? 1'b1 :
-                   ((ALUoperation == 4'b0001) && {1'b0, A} < {1'b0, B}) ? 1'b1 : 1'b0;
+    assign Overflow = ((ALUoperation == 5'b00000) && (A[31] == B[31]) && (res[31] != A[31])) ? 1'b1 :
+                      ((ALUoperation == 5'b00001) && (A[31] != B[31]) && (res[31] != A[31])) ? 1'b1 : 1'b0;
+    assign Carry = ((ALUoperation == 5'b00000) && (res < A)) ? 1'b1 :
+                   ((ALUoperation == 5'b00001) && {1'b0, A} < {1'b0, B}) ? 1'b1 : 1'b0;
+    assign ALUresult = (ALUoperation == 5'b10000) ? (Negative ^ Overflow) :
+                       (ALUoperation == 5'b10001) ? Carry : res;
 endmodule
