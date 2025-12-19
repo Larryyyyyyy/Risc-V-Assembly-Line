@@ -30,7 +30,7 @@ module main(
     /*--------IF--------*/
     always @(posedge clk or negedge rstn) begin
         if (!rstn) PC <= 32'b0;
-        else if (PCWrite) PC <= next_PC;
+        else if (PCWrite && !stall) PC <= next_PC;
     end
     // 你可以用 instruction.v 里拙劣的方法调试
     instructions u_instructions(
@@ -50,11 +50,7 @@ module main(
             IF_ID_PC <= 32'b0;
             IF_ID_instruction <= 32'b0;
         end
-        else if (!IF_ID_Write) begin
-            IF_ID_PC <= IF_ID_PC;
-            IF_ID_instruction <= IF_ID_instruction;
-        end
-        else begin
+        else if (IF_ID_Write && !stall) begin
             IF_ID_PC <= PC;
             IF_ID_instruction <= instruction;
         end
@@ -136,7 +132,8 @@ module main(
             ID_EX_funct <= 10'b0;
             ID_EX_DMType <= 3'b0;
             ID_EX_ALUOp <= 2'b0;
-        end else begin
+        end
+        else if (!stall) begin
             ID_EX_Read_data1 <= Read_data1;
             ID_EX_Read_data2 <= Read_data2;
             ID_EX_imm <= imm;
@@ -187,7 +184,7 @@ module main(
         .Forward(ForwardB),
         .res(forward_mux_res2)
     );
-    wire [3:0] ALUoperation;
+    wire [4:0] ALUoperation;
     ALUcontrol u_ALUcontrol(
         .funct(ID_EX_funct),
         .ALUOp(ID_EX_ALUOp),
@@ -290,7 +287,7 @@ module main(
             EX_MEM_RegDest <= 0;
             EX_MEM_DMType <= 3'b0;
         end
-        else begin
+        else if (!stall) begin
             EX_MEM_PC <= ID_EX_PC;
             EX_MEM_ALUresult <= ALUresult;
             EX_MEM_Read_data2 <= forward_mux_res2;
@@ -305,7 +302,8 @@ module main(
     end
     /*--------MEM--------*/
     wire [31:0] Read_data;
-    dm u_dm(
+    wire stall;
+    /*dm u_dm(
         .clk(clk),
         .rstn(rstn),
         .MemWrite(EX_MEM_MemWrite),
@@ -314,24 +312,34 @@ module main(
         .Address(EX_MEM_ALUresult),
         .Write_data(EX_MEM_Read_data2),
         .Read_data(Read_data)
+    );*/
+    cache u_cache(
+        .clk(clk),
+        .rstn(rstn),
+        .CacheWrite(EX_MEM_MemWrite),
+        .CacheRead(EX_MEM_MemRead),
+        .DMType(EX_MEM_DMType),
+        .Address(EX_MEM_ALUresult),
+        .Write_data(EX_MEM_Read_data2),
+        .stall(stall),
+        .Read_data(Read_data)
     );
     reg [31:0] MEM_WB_PC;
-    reg [31:0] MEM_WB_ALUresult, MEM_WB_Read_data;
+    reg [31:0] MEM_WB_ALUresult;
     reg [5:0] MEM_WB_Write_register;
     reg MEM_WB_RegWrite, MEM_WB_MemtoReg, MEM_WB_RegDest;
     always @(posedge clk or negedge rstn) begin
         if (!rstn) begin
             MEM_WB_PC <= 32'b0;
             MEM_WB_ALUresult <= 32'b0;
-            MEM_WB_Read_data <= 32'b0;
             MEM_WB_Write_register <= 6'b0;
             MEM_WB_RegWrite <= 1'b0;
             MEM_WB_MemtoReg <= 1'b0;
             MEM_WB_RegDest <= 1'b0;
-        end else begin
+        end
+        else if(!stall) begin
             MEM_WB_PC <= EX_MEM_PC;
             MEM_WB_ALUresult <= EX_MEM_ALUresult;
-            MEM_WB_Read_data <= Read_data;
             MEM_WB_Write_register <= EX_MEM_Write_register;
             MEM_WB_RegWrite <= EX_MEM_RegWrite;
             MEM_WB_MemtoReg <= EX_MEM_MemtoReg;
@@ -342,7 +350,7 @@ module main(
     wire [31:0] mux_res2;
     mux u_mux2( // 是否读内存
         .x(MEM_WB_ALUresult),
-        .y(MEM_WB_Read_data),
+        .y(Read_data),
         .signal(MEM_WB_MemtoReg),
         .z(mux_res2)
     );
