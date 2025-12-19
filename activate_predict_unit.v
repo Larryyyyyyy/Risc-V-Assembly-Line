@@ -52,7 +52,7 @@ module activate_predict_unit(
                 bht[i] <= 2'b0;
                 btb[i] <= 52'b0;
             end
-        end
+        end /* WARNING! 我只能告诉你这里在不同分支里改写 bht 是不合法的, 但是仿真的时候没有影响 */
         if (!btb[EX_PC[9:0]][51] || btb[EX_PC[9:0]][49:30] != EX_PC[29:10]) begin
             btb[EX_PC[9:0]][51] <= 1;
             btb[EX_PC[9:0]][50] <= Branch;
