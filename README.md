@@ -4,7 +4,7 @@
 
 CPU设计图：
 
-![示意图](.\pictures\CPU.svg)
+![示意图](./pictures/CPU.svg)
 
 ---
 
