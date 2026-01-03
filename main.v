@@ -267,8 +267,8 @@ module main(
         .z(next_PC)
     );
     wire IF_ID_Flush, ID_EX_Flush;
-    assign IF_ID_Flush = (JumpJal || ID_EX_JumpJalr || Predict_Flush) ? 1 : 0;
-    assign ID_EX_Flush = (ID_EX_JumpJalr || Predict_Flush) ? 1 : 0;
+    assign IF_ID_Flush = JumpJal | ID_EX_JumpJalr | Predict_Flush;
+    assign ID_EX_Flush = ID_EX_JumpJalr | Predict_Flush;
     reg [31:0] EX_MEM_PC;
     reg [31:0] EX_MEM_ALUresult, EX_MEM_Read_data2;
     reg [4:0] EX_MEM_Write_register;

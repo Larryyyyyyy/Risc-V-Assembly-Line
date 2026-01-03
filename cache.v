@@ -85,6 +85,45 @@ module cache(
                         for (i = 0; i < 4; i = i + 1) begin
                             if (cache[Address[9:2]][i][54] && cache[Address[9:2]][i][53:32] == Address[31:10]) begin
                                 Read_data <= cache[Address[9:2]][i][31:0];
+                                if (LRU[Address[9:2]] < 6) begin
+                                    case (LRU[Address[9:2]])
+                                        0: LRU[Address[9:2]] <= 9;
+                                        1: LRU[Address[9:2]] <= 11;
+                                        2: LRU[Address[9:2]] <= 15;
+                                        3: LRU[Address[9:2]] <= 17;
+                                        4: LRU[Address[9:2]] <= 21;
+                                        5: LRU[Address[9:2]] <= 23;
+                                    endcase
+                                end else if (LRU[Address[9:2]] < 12) begin
+                                    case (LRU[Address[9:2]])
+                                        6: LRU[Address[9:2]] <= 3;
+                                        7: LRU[Address[9:2]] <= 5;
+                                        8: LRU[Address[9:2]] <= 13;
+                                        9: LRU[Address[9:2]] <= 16;
+                                        10: LRU[Address[9:2]] <= 19;
+                                        11: LRU[Address[9:2]] <= 22;
+                                    endcase
+                                end
+                                else if (LRU[Address[9:2]] < 18) begin
+                                    case (LRU[Address[9:2]])
+                                        12: LRU[Address[9:2]] <= 1;
+                                        13: LRU[Address[9:2]] <= 4;
+                                        14: LRU[Address[9:2]] <= 7;
+                                        15: LRU[Address[9:2]] <= 10;
+                                        16: LRU[Address[9:2]] <= 18;
+                                        17: LRU[Address[9:2]] <= 20;
+                                    endcase
+                                end
+                                else if (LRU[Address[9:2]] < 24) begin
+                                    case (LRU[Address[9:2]])
+                                        18: LRU[Address[9:2]] <= 0;
+                                        19: LRU[Address[9:2]] <= 2;
+                                        20: LRU[Address[9:2]] <= 6;
+                                        21: LRU[Address[9:2]] <= 8;
+                                        22: LRU[Address[9:2]] <= 12;
+                                        23: LRU[Address[9:2]] <= 14;
+                                    endcase
+                                end
                             end
                         end
                     end
@@ -94,6 +133,45 @@ module cache(
                             if (cache[Address[9:2]][i][54] && cache[Address[9:2]][i][53:32] == Address[31:10]) begin
                                 cache[Address[9:2]][i][31:0] <= Write_data;
                                 cache[Address[9:2]][i][55] <= 1'b1;
+                                if (LRU[Address[9:2]] < 6) begin
+                                    case (LRU[Address[9:2]])
+                                        0: LRU[Address[9:2]] <= 9;
+                                        1: LRU[Address[9:2]] <= 11;
+                                        2: LRU[Address[9:2]] <= 15;
+                                        3: LRU[Address[9:2]] <= 17;
+                                        4: LRU[Address[9:2]] <= 21;
+                                        5: LRU[Address[9:2]] <= 23;
+                                    endcase
+                                end else if (LRU[Address[9:2]] < 12) begin
+                                    case (LRU[Address[9:2]])
+                                        6: LRU[Address[9:2]] <= 3;
+                                        7: LRU[Address[9:2]] <= 5;
+                                        8: LRU[Address[9:2]] <= 13;
+                                        9: LRU[Address[9:2]] <= 16;
+                                        10: LRU[Address[9:2]] <= 19;
+                                        11: LRU[Address[9:2]] <= 22;
+                                    endcase
+                                end
+                                else if (LRU[Address[9:2]] < 18) begin
+                                    case (LRU[Address[9:2]])
+                                        12: LRU[Address[9:2]] <= 1;
+                                        13: LRU[Address[9:2]] <= 4;
+                                        14: LRU[Address[9:2]] <= 7;
+                                        15: LRU[Address[9:2]] <= 10;
+                                        16: LRU[Address[9:2]] <= 18;
+                                        17: LRU[Address[9:2]] <= 20;
+                                    endcase
+                                end
+                                else if (LRU[Address[9:2]] < 24) begin
+                                    case (LRU[Address[9:2]])
+                                        18: LRU[Address[9:2]] <= 0;
+                                        19: LRU[Address[9:2]] <= 2;
+                                        20: LRU[Address[9:2]] <= 6;
+                                        21: LRU[Address[9:2]] <= 8;
+                                        22: LRU[Address[9:2]] <= 12;
+                                        23: LRU[Address[9:2]] <= 14;
+                                    endcase
+                                end
                             end
                         end
                     end
@@ -193,6 +271,7 @@ module cache(
                     MemWrite <= 0;
                     if (MemReady) begin
                         MemRead <= 0;
+                        Read_data <= MemData;
                         if (LRU[Address[9:2]] < 6) begin
                             cache[Address[9:2]][0][31:0] <= MemData;
                             cache[Address[9:2]][0][53:32] <= Address[31:10];
